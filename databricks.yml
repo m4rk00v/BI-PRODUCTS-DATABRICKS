@@ -18,35 +18,28 @@ resources:
         on_failure:
           - hombrehealth111@gmail.com
 
-      job_clusters:
-        - job_cluster_key: weather_cluster
-          new_cluster:
-            spark_version: "15.4.x-scala2.12"
-            node_type_id: "Standard_DS3_v2"
-            num_workers: 0
-            spark_conf:
-              spark.master: "local[*]"
-              spark.databricks.cluster.profile: "singleNode"
-            custom_tags:
-              ResourceClass: "SingleNode"
+      environments:
+        - environment_key: serverless
+          spec:
+            client: "1"
+            dependencies:
+              - requests
 
       tasks:
         - task_key: bronze_ingest_weather
-          job_cluster_key: weather_cluster
+          environment_key: serverless
           spark_python_task:
             python_file: bronze/ingest_weather.py
-          libraries:
-            - pypi: { package: requests }
 
         - task_key: silver_clean_weather
-          job_cluster_key: weather_cluster
+          environment_key: serverless
           depends_on:
             - task_key: bronze_ingest_weather
           spark_python_task:
             python_file: silver/clean_weather.py
 
         - task_key: gold_weather_summary
-          job_cluster_key: weather_cluster
+          environment_key: serverless
           depends_on:
             - task_key: silver_clean_weather
           spark_python_task:
