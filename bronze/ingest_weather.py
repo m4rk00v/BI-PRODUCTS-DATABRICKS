@@ -1,16 +1,30 @@
 """Bronze layer: ingest raw weather data from Open-Meteo API and save as Delta."""
 
+import os
 import json
 import requests
 from pyspark.sql import SparkSession
 
-import sys, os
-try:
-    _dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-except NameError:
-    _dir = os.getcwd()
-sys.path.insert(0, _dir)
-from config.settings import CITIES, API_URL, DAILY_VARIABLES, PAST_DAYS, BRONZE_PATH
+CATALOG = os.getenv("CATALOG", "workspace")
+SCHEMA = os.getenv("SCHEMA", "demo")
+BRONZE_PATH = f"/Volumes/{CATALOG}/{SCHEMA}/weather/bronze/"
+
+API_URL = "https://api.open-meteo.com/v1/forecast"
+DAILY_VARIABLES = [
+    "temperature_2m_max",
+    "temperature_2m_min",
+    "precipitation_sum",
+    "windspeed_10m_max",
+]
+PAST_DAYS = 90
+
+CITIES = [
+    {"name": "Mexico City", "latitude": 19.43, "longitude": -99.13},
+    {"name": "New York", "latitude": 40.71, "longitude": -74.01},
+    {"name": "London", "latitude": 51.51, "longitude": -0.13},
+    {"name": "Tokyo", "latitude": 35.69, "longitude": 139.69},
+    {"name": "Sydney", "latitude": -33.87, "longitude": 151.21},
+]
 
 spark = SparkSession.builder.getOrCreate()
 
@@ -43,5 +57,4 @@ def ingest_all_cities():
     print(f"Bronze: wrote {df.count()} rows to {BRONZE_PATH}")
 
 
-if __name__ == "__main__":
-    ingest_all_cities()
+ingest_all_cities()

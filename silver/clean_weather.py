@@ -1,18 +1,14 @@
 """Silver layer: clean and normalize Bronze weather data."""
 
+import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, explode, arrays_zip, from_json, get_json_object
-from pyspark.sql.types import (
-    StructType, StructField, StringType, ArrayType, FloatType,
-)
+from pyspark.sql.types import StringType, ArrayType, FloatType
 
-import sys, os
-try:
-    _dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-except NameError:
-    _dir = os.getcwd()
-sys.path.insert(0, _dir)
-from config.settings import BRONZE_PATH, SILVER_PATH
+CATALOG = os.getenv("CATALOG", "workspace")
+SCHEMA = os.getenv("SCHEMA", "demo")
+BRONZE_PATH = f"/Volumes/{CATALOG}/{SCHEMA}/weather/bronze/"
+SILVER_PATH = f"/Volumes/{CATALOG}/{SCHEMA}/weather/silver/"
 
 spark = SparkSession.builder.getOrCreate()
 
@@ -70,5 +66,4 @@ def clean_weather():
     print(f"Silver: wrote {silver_df.count()} rows to {SILVER_PATH}")
 
 
-if __name__ == "__main__":
-    clean_weather()
+clean_weather()

@@ -1,19 +1,15 @@
 """Gold layer: aggregate Silver data into monthly summaries per city."""
 
+import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, avg, sum as _sum, date_format, round as _round
 
-import sys, os
-try:
-    _dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-except NameError:
-    _dir = os.getcwd()
-sys.path.insert(0, _dir)
-from config.settings import SILVER_PATH, GOLD_PATH, CATALOG, SCHEMA
+CATALOG = os.getenv("CATALOG", "workspace")
+SCHEMA = os.getenv("SCHEMA", "demo")
+SILVER_PATH = f"/Volumes/{CATALOG}/{SCHEMA}/weather/silver/"
+GOLD_TABLE = f"{CATALOG}.{SCHEMA}.gold_weather_summary"
 
 spark = SparkSession.builder.getOrCreate()
-
-GOLD_TABLE = f"{CATALOG}.{SCHEMA}.gold_weather_summary"
 
 
 def build_summary():
@@ -59,5 +55,4 @@ def build_summary():
     print(f"Gold: {GOLD_TABLE} has {count} rows after merge")
 
 
-if __name__ == "__main__":
-    build_summary()
+build_summary()
