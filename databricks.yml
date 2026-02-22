@@ -16,7 +16,7 @@ resources:
 
       email_notifications:
         on_failure:
-          - kevinnnava0101@gmail.com
+          - hombrehealth111@gmail.com
 
       job_clusters:
         - job_cluster_key: weather_cluster
