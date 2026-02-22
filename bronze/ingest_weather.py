@@ -28,6 +28,10 @@ CITIES = [
 
 spark = SparkSession.builder.getOrCreate()
 
+# Create schema and volume if they don't exist
+spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.{SCHEMA}")
+spark.sql(f"CREATE VOLUME IF NOT EXISTS {CATALOG}.{SCHEMA}.weather")
+
 
 def fetch_weather(city: dict) -> dict:
     """Call Open-Meteo API for a single city and return raw JSON response."""
