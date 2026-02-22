@@ -10,8 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Databricks CLI
-        run: pip install databricks-cli
+      - name: Install Databricks CLI v2
+        run: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
 
       - name: Deploy bundle
         env:
