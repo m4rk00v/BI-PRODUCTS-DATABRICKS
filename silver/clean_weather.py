@@ -7,7 +7,11 @@ from pyspark.sql.types import (
 )
 
 import sys, os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+try:
+    _dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+except NameError:
+    _dir = os.getcwd()
+sys.path.insert(0, _dir)
 from config.settings import BRONZE_PATH, SILVER_PATH
 
 spark = SparkSession.builder.getOrCreate()

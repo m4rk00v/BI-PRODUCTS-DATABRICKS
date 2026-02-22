@@ -5,7 +5,11 @@ import requests
 from pyspark.sql import SparkSession
 
 import sys, os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+try:
+    _dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+except NameError:
+    _dir = os.getcwd()
+sys.path.insert(0, _dir)
 from config.settings import CITIES, API_URL, DAILY_VARIABLES, PAST_DAYS, BRONZE_PATH
 
 spark = SparkSession.builder.getOrCreate()

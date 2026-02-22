@@ -4,7 +4,11 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, avg, sum as _sum, date_format, round as _round
 
 import sys, os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+try:
+    _dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+except NameError:
+    _dir = os.getcwd()
+sys.path.insert(0, _dir)
 from config.settings import SILVER_PATH, GOLD_PATH, CATALOG, SCHEMA
 
 spark = SparkSession.builder.getOrCreate()
